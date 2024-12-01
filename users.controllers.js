@@ -410,7 +410,7 @@ const sendOTP = (email, otp, message) => {
     from: process.env.EMAIL_USER,
     to: email,
     subject: message,
-    text: `your OTP for verification ${otp}`,
+    text: `OTP for Reset Your Password ${otp}`,
   };
   const transporter = nodemailer.createTransport({
     service: "Gmail",
