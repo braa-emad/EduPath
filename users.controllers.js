@@ -84,10 +84,11 @@ const Register = async (req, res) => {
   const { username, email, password } = req.body;
 
   const isexist = (check, fieldName) => {
+    const message = `${fieldName} is required`
     if (!check || check.trim() === "") {
       res.status(400).json({
         status: RESPONSE.STATUS.fail,
-        data: { field: fieldName, error: "is required" },
+        data: message
       });
       return false;
     }
@@ -142,6 +143,7 @@ const Register = async (req, res) => {
     });
   }
 };
+ // done
 
 const Profile = async (req, res) => {
   const { token } = req.body;
@@ -165,7 +167,7 @@ const Profile = async (req, res) => {
     }
     return res.json({
       status: RESPONSE.STATUS.success,
-      data: { username: user.username },
+      data: user.username ,
     });
   } catch (err) {
     return res
@@ -173,7 +175,7 @@ const Profile = async (req, res) => {
       .json({ status: RESPONSE.STATUS.error, data: err.message });
   }
 };
-
+// done
 const LoginWithToken = async (req, res) => {
   const { token } = req.body;
   if (!token) {
@@ -208,7 +210,7 @@ const LoginWithToken = async (req, res) => {
       });
   }
 };
-
+// done
 const reqOTP = async (req, res) => {
   const { email } = req.body;
   if (!email) {
@@ -357,6 +359,7 @@ const generateOTP = async (user) => {
 
 const Checktoken = async (req, res) => {
   const { OTP, token } = req.body;
+  console.log("request sent successfully");
   try {
     if (!OTP) {
       return res
