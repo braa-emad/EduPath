@@ -233,7 +233,6 @@ const reqOTP = async (req, res) => {
     const otp = await generateOTP(user);
     const message = "Forgot Password OTP";
     sendOTP(email, otp, message);
-    console.log(otp);
     res
       .status(200)
       .json({
