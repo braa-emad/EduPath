@@ -251,12 +251,12 @@ const reqOTP = async (req, res) => {
 };
 
 const userForgotPassword = async (req, res) => {
-  const { newPassword, ConfirmPassword, token } = req.body;
+  const { password, confirmPassword, token } = req.body;
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    req.id = decoded.id;
-    const user = await User.findById(req.id);
-    if (newPassword !== ConfirmPassword) {
+    const user = await User.findOne({email: decoded.email});
+    console.log(user);
+    if (password !== confirmPassword) {
       return res
         .status(400)
         .json({
@@ -264,16 +264,16 @@ const userForgotPassword = async (req, res) => {
           data: RESPONSE.DATA.passwordsDoNotMatch,
         });
     }
-    if (!isStrongPassword(newPassword)) {
+    if (!isStrongPassword(password)) {
       return res.status(400).json({
         status: RESPONSE.STATUS.fail,
         data: RESPONSE.DATA.passwordPolicy,
       });
     }
 
-    const password = await bcrypt.hash(newPassword, saltrounds);
+    const NEWPASS = await bcrypt.hash(password, saltrounds);
 
-    user.password = password;
+    user.password = NEWPASS;
     await user.save();
     return res
       .status(200)
@@ -282,6 +282,7 @@ const userForgotPassword = async (req, res) => {
         data: RESPONSE.DATA.passwordUpdated,
       });
   } catch (err) {
+    console.log(err);
     return res
       .status(500)
       .json({ status: RESPONSE.STATUS.error, data: err.message });
@@ -426,13 +427,14 @@ const sendOTP = (email, otp, message) => {
     },
   });
   transporter.sendMail(mailoptions, (err, info) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(info.response);
+    if
+    (err){
+      console.log("Email not sent", err);
     }
   });
 };
+
+
 
 module.exports = {
   Getallusers,
