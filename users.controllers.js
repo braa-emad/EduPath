@@ -4,7 +4,7 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
-const RESPONSE = require("./responses");
+const RESPONSE = require("./response");
 
 const saltrounds = 10;
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -84,11 +84,10 @@ const Register = async (req, res) => {
   const { username, email, password } = req.body;
 
   const isexist = (check, fieldName) => {
-    const message = `${fieldName} is required`
     if (!check || check.trim() === "") {
       res.status(400).json({
         status: RESPONSE.STATUS.fail,
-        data: message
+        data: { field: fieldName, error: "is required" },
       });
       return false;
     }
@@ -143,7 +142,6 @@ const Register = async (req, res) => {
     });
   }
 };
- // done
 
 const Profile = async (req, res) => {
   const { token } = req.body;
@@ -167,7 +165,7 @@ const Profile = async (req, res) => {
     }
     return res.json({
       status: RESPONSE.STATUS.success,
-      data: user.username ,
+      data: { username: user.username },
     });
   } catch (err) {
     return res
@@ -175,7 +173,7 @@ const Profile = async (req, res) => {
       .json({ status: RESPONSE.STATUS.error, data: err.message });
   }
 };
-// done
+
 const LoginWithToken = async (req, res) => {
   const { token } = req.body;
   if (!token) {
@@ -210,7 +208,7 @@ const LoginWithToken = async (req, res) => {
       });
   }
 };
-// done
+
 const reqOTP = async (req, res) => {
   const { email } = req.body;
   if (!email) {
@@ -251,12 +249,12 @@ const reqOTP = async (req, res) => {
 };
 
 const userForgotPassword = async (req, res) => {
-  const { password, confirmPassword, token } = req.body;
+  const { newPassword, ConfirmPassword, token } = req.body;
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    const user = await User.findOne({email: decoded.email});
-    console.log(user);
-    if (password !== confirmPassword) {
+    req.id = decoded.id;
+    const user = await User.findById(req.id);
+    if (newPassword !== ConfirmPassword) {
       return res
         .status(400)
         .json({
@@ -264,16 +262,16 @@ const userForgotPassword = async (req, res) => {
           data: RESPONSE.DATA.passwordsDoNotMatch,
         });
     }
-    if (!isStrongPassword(password)) {
+    if (!isStrongPassword(newPassword)) {
       return res.status(400).json({
         status: RESPONSE.STATUS.fail,
         data: RESPONSE.DATA.passwordPolicy,
       });
     }
 
-    const NEWPASS = await bcrypt.hash(password, saltrounds);
+    const password = await bcrypt.hash(newPassword, saltrounds);
 
-    user.password = NEWPASS;
+    user.password = password;
     await user.save();
     return res
       .status(200)
@@ -282,7 +280,6 @@ const userForgotPassword = async (req, res) => {
         data: RESPONSE.DATA.passwordUpdated,
       });
   } catch (err) {
-    console.log(err);
     return res
       .status(500)
       .json({ status: RESPONSE.STATUS.error, data: err.message });
@@ -360,7 +357,6 @@ const generateOTP = async (user) => {
 
 const Checktoken = async (req, res) => {
   const { OTP, token } = req.body;
-  console.log("request sent successfully");
   try {
     if (!OTP) {
       return res
@@ -427,14 +423,13 @@ const sendOTP = (email, otp, message) => {
     },
   });
   transporter.sendMail(mailoptions, (err, info) => {
-    if
-    (err){
-      console.log("Email not sent", err);
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info.response);
     }
   });
 };
-
-
 
 module.exports = {
   Getallusers,

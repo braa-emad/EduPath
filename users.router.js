@@ -22,4 +22,18 @@ router.route("/otp").post(controller.reqOTP);
 
 router.route("/checktoken").post(controller.Checktoken);
 
+//=======googel========
+router.route('/auth/google').get(
+    passport.authenticate('google',{
+        scope:['email','profile'],
+        prompt:'select_account',
+    })
+)
+router.route('/auth/google/callback').get(
+    passport.authenticate('google',{
+        successRedirect:'/profile',
+        failureRedirect:'/login',
+    })
+)
+
 module.exports = router;
