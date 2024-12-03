@@ -165,7 +165,7 @@ const Profile = async (req, res) => {
     }
     return res.json({
       status: RESPONSE.STATUS.success,
-      data: { username: user.username },
+      data: { username: user.username, email: user.email },
     });
   } catch (err) {
     return res
