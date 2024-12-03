@@ -1,2 +1,2 @@
 # EduPath
-(goodAPI)[https://have.alot.of.bugs.lol]
+[goodAPI](https://have.alot.of.bugs.lol)
