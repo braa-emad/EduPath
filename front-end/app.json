@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "education-system",
+    "slug": "education-system",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.emad.educationsystem"
+    },
+    "web": {},
+    "extra": {
+      "eas": {
+        "projectId": "06845b2d-7ce5-47a3-b4b9-2fe5fcf18420"
+      }
+    }
+  }
+}
