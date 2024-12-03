@@ -1,3 +1,3 @@
 # EduPath
-# Sawery Ya 3twany
+# Sawwarni ya 3atwany
 - this is the F*cken repo
