@@ -33,7 +33,6 @@ const createTempJWT = (userinfo) => {
   });
   return Temptoken;
 };
-
 const Getallusers = async (req, res) => {
   const users = await User.find({}, { __v: false });
   res.json({ status: RESPONSE.STATUS.success, data: { users } });
